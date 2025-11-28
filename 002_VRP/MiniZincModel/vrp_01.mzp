@@ -1,0 +1,14 @@
+{
+    "openFiles": [
+        "vrp_001.mzn",
+        "vrp_002.mzn"
+    ],
+    "openTab": 1,
+    "projectFiles": [
+        "vrp_001.mzn",
+        "vrp_002.mzn"
+    ],
+    "selectedBuiltinConfigId": "org.gecode.gecode",
+    "selectedBuiltinConfigVersion": "6.3.0",
+    "version": 106
+}
