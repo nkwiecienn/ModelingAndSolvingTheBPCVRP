@@ -1,0 +1,68 @@
+\section{Bin Packing Problem}
+\label{sec:bin_packing_problem}
+
+The \textbf{Bin Packing Problem (BPP)} represents the first component of the Bin Packing Capacitated Vehicle Routing Problem (BP-CVRP). 
+Originating from early studies on resource allocation and cutting processes in the mid-twentieth century \cite{Kantorovich1960, DELORME2016}, the problem has since found numerous applications across operations research, computer science, and engineering, including manufacturing, container loading, stock cutting, scheduling, and data storage \cite{Coleman2013}. 
+This section introduces the classical BPP, outlines the main approaches for solving it and its major variants, before turning to the routing aspects discussed in later sections.
+
+\subsection{Definition of the Bin Packing Problem}
+
+The \textbf{Bin Packing Problem (BPP)} concerns arranging a collection of items of different sizes into a limited number of bins, each with the same fixed capacity, in such a way that the total number of bins used is minimised.
+
+A formal definition will be presented later in Chapter~\ref{cha:problem_formulation}; however, an informal description is provided here for clarity. 
+Given a bin capacity \( C \) and a list of items \( L = (p_1, p_2, \ldots, p_n) \), where each item \( p_i \) has a size \( s(p_i) \) satisfying \( 0 \leq s(p_i) < C \), find the smallest integer \( m \) such that \( L \) can be partitioned into \( m \) disjoint subsets \( B_1, B_2, \ldots, B_m \), where the total size of the items in each subset does not exceed \( C \).  
+Each subset \( B_j \) corresponds to the contents of a single bin with a capacity of \( C \) \cite{Coleman2013}.
+
+According to \cite{NPCOMPLETENESS}, the BPP is strongly NP-complete, which motivates the development of heuristic and approximation algorithms capable of producing near-optimal solutions within reasonable computational time.
+
+\newpage
+
+\subsection{Solution Approaches for the Bin Packing Problem}
+
+Solution approaches for almost any optimisation problem can be divided into three main categories: finding an \textit{exact} solution, finding an \textit{approximation} (often used to estimate a lower bound that guides the search), or using a \textit{heuristic}, which sacrifices guaranteed optimality for faster computation.
+
+A \textbf{solution approximation}, following the definition in \cite{DELORME2016}, is a strategy for finding a solution for which the worst-case performance ratio is known. 
+Some optimisation methods benefit from having any initial feasible solution, while others exploit good lower bounds to reduce the search space; hence, the approximation algorithms are so important.
+
+One of the simplest classes of algorithms for the BPP are \textit{online algorithms}. 
+These methods process items sequentially, considering only the current state of the packing and the next item to be placed—without knowledge of future items. 
+Popular examples include the \textit{Next-Fit (NF)}, \textit{First-Fit (FF)}, and \textit{Best-Fit (BF)} algorithms. 
+In all of them, some bins are considered \textit{open} or \textit{closed}, and new items may only be placed into open bins. 
+Taking NF as an example, only one bin is open at a time: items are packed into it until the next one no longer fits, at which point the bin is closed and a new one is opened. 
+Better solutions are typically achieved with FF and BF, where all bins remain open and a new item is placed either into the first bin it fits (FF) or into the bin that will have the least remaining space after placement (BF). 
+Even better results can be obtained by sorting items in decreasing order of size before packing; this modification, however, makes the algorithm \textit{offline} rather than online \cite{Coffman1996, DELORME2016}.
+
+A different approach involves \textbf{pseudo-polynomial formulations}, which, somewhat counter-intuitively, introduce additional variables to strengthen the model. 
+This results in tighter \textit{linear relaxations} and helps eliminate symmetries that often weaken the classic integer linear programming formulation proposed originally by \citeauthor{Kantorovich1960} \cite{Kantorovich1960}.
+
+A notable example of such a formulation is the \textbf{Dynamic Programming (DP) flow model} proposed by \citeauthor{Cambazard2010} \cite{Cambazard2010}. 
+It combines ideas from dynamic programming tables and network flow modelling. 
+The main idea is to represent the process of filling a single bin as a flow through a network, where each node corresponds to a partial load of the bin and each arc represents adding a specific item. 
+A complete path from the source node (empty bin) to the sink node (full bin) describes one feasible combination of items that can fit together in a bin.
+
+In this model, the bin capacity is divided into discrete states, typically from \( 0 \) to \( c \), where \( c \) is the maximum capacity. 
+For every item type \( j \) with size \( w_j \), arcs are created from node \( k \) to node \( k + w_j \) whenever \( k + w_j \leq c \). 
+Each arc indicates that an item of size \( w_j \) can be added when the bin currently contains a total load of \( k \). 
+Finding a valid bin configuration then becomes equivalent to finding a path from the source to the sink.
+
+While the methods described above focus on generating good solutions, reducing the search space, or modelling the problem in a way that eliminates symmetric solutions, the remaining task is to actually explore the search space and identify the optimal solution—in other words, to model the search strategy itself. 
+Such methods include \textbf{Branch-and-Bound} and the more advanced \textbf{Branch-and-Price}. 
+
+In the Branch-and-Bound approach, the solution space is recursively divided into smaller subproblems (branches), and each subproblem is evaluated using upper and lower bounds to discard those that cannot contain an optimal solution. 
+This systematic enumeration ensures optimality while avoiding complete exhaustive search.
+
+\textbf{Branch-and-Price} extends this framework by integrating \textit{column generation} into the branching process. 
+In the classical set-partitioning formulation, each variable represents a feasible bin configuration—that is, a group of items that can be packed together without exceeding capacity. 
+Since the number of such configurations grows exponentially, it is impossible to list them all explicitly. 
+Column generation addresses this by starting from a restricted master problem that contains only a small subset of feasible configurations \cite{Valerio2002, DELORME2016}. 
+A secondary optimisation problem, called the \textit{pricing problem}, is then solved to generate new promising configurations that could improve the current solution. 
+In the context of the BPP, this pricing problem is a variant of the knapsack problem and is usually solved using dynamic programming. 
+The column generation loop continues until no improving configurations can be found, yielding an optimal solution to the linear relaxation of the problem. 
+This process is embedded into a Branch-and-Bound framework, where branching decisions impose additional constraints and column generation is used at each node to compute strong bounds. 
+As a result, Branch-and-Price combines the completeness of Branch-and-Bound with the efficiency of column generation and can solve instances that are far beyond the reach of traditional integer formulations \cite{DELORME2016}.
+
+In addition to exact and pseudo-polynomial approaches, a wide range of \textbf{heuristic and metaheuristic methods} has been developed to solve large-scale or highly constrained instances of the BPP. 
+These methods trade guaranteed optimality for scalability and shorter computation times, making them suitable for real-world industrial applications. 
+Population-based metaheuristics, such as \textit{Genetic Algorithms}, \textit{Memetic Algorithms}, and \textit{Ant Colony Optimization} explore many solutions simultaneously through evolutionary or cooperative mechanisms. 
+Trajectory-based approaches, including \textit{Tabu Search}, \textit{Simulated Annealing}, and the \textit{Greedy Randomised Adaptive Search Procedure (GRASP)} , focus on iteratively improving a single solution using local search and diversification strategies. 
+Although these methods do not guarantee an optimal result, they can efficiently produce high-quality solutions for large or complex problem instances and are therefore widely used in practice \cite{Munien2021, DELORME2016}.
