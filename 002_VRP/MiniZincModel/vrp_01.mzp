@@ -1,10 +1,21 @@
 {
     "openFiles": [
         "vrp_001.mzn",
-        "vrp_002.mzn"
+        "vrp_002.mzn",
+        "../Data/Random/n10.dzn",
+        "../Data/Random/n6.dzn",
+        "../Data/Random/n7.dzn",
+        "../Data/Random/n8.dzn",
+        "../Data/Random/n9.dzn"
     ],
-    "openTab": 1,
+    "openTab": 4,
     "projectFiles": [
+        "../Data/Random/n10.dzn",
+        "../Data/Random/n5.dzn",
+        "../Data/Random/n6.dzn",
+        "../Data/Random/n7.dzn",
+        "../Data/Random/n8.dzn",
+        "../Data/Random/n9.dzn",
         "vrp_001.mzn",
         "vrp_002.mzn"
     ],
