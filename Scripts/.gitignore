@@ -47,11 +47,6 @@ htmlcov/
 # MiniZinc outputs (Scripts-specific - DO commit .dzn)
 *.json
 
-# Results (Scripts-specific)
-results/*.csv
-results/*.json
-results/*.txt
-
 # Temporary files
 *.tmp
 *.log

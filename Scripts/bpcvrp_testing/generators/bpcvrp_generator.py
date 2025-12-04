@@ -96,6 +96,7 @@ def generate_random_bpcvrp(
         row: List[int] = [
             rng.randint(min_size, max_size) for _ in range(k)
         ]
+        row.sort(reverse=True)
         if k < maxItemsPerCustomer:
             row.extend([0] * (maxItemsPerCustomer - k))
         SizesOfItems.append(row)

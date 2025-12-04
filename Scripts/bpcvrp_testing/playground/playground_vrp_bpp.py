@@ -25,7 +25,7 @@ def test_1_bpp_txt_to_dzn():
     print("BPP from txt:", inst)
 
     save_as_dzn(inst, dzn_path)
-    print("Zapisano .dzn do:", dzn_path)
+    print("Saved .dzn to:", dzn_path)
 
 
 def test_2_vrp_txt_to_dzn():
@@ -36,7 +36,7 @@ def test_2_vrp_txt_to_dzn():
     print("VRP from txt: N, Capacity =", inst.N, inst.Capacity)
 
     save_as_dzn(inst, dzn_path)
-    print("Zapisano .dzn do:", dzn_path)
+    print("Saved .dzn to:", dzn_path)
 
 
 def test_3_bpp_generate_to_dzn():
@@ -50,12 +50,12 @@ def test_3_bpp_generate_to_dzn():
     dzn_path = DATA_DIR / "bpp_dzn" / "gen_bpp_20_100.dzn"
     print("Generated BPP:", inst.n, inst.capacity, inst.sizes[:5], "...")
     save_as_dzn(inst, dzn_path)
-    print("Zapisano .dzn do:", dzn_path)
+    print("Saved .dzn to:", dzn_path)
 
 
 def test_4_vrp_generate_to_dzn():
     inst: VRPInstance = generate_random_vrp(
-        n_customers=20,
+        n_customers=10,
         area_size=100.0,
         demand_min=1,
         demand_max=10,
@@ -68,7 +68,7 @@ def test_4_vrp_generate_to_dzn():
     dzn_path = DATA_DIR / "vrp_dzn" / "gen_vrp_n20.dzn"
     print("Generated VRP:", inst.N, inst.Capacity)
     save_as_dzn(inst, dzn_path)
-    print("Zapisano .dzn do:", dzn_path)
+    print("Saved .dzn to:", dzn_path)
 
 
 def test_5_bpp_generate_and_solve():
@@ -93,7 +93,7 @@ def test_5_bpp_generate_and_solve():
 
 def test_6_vrp_generate_and_solve():
     inst: VRPInstance = generate_random_vrp(
-        n_customers=15,
+        n_customers=6,
         area_size=100.0,
         demand_min=1,
         demand_max=10,
@@ -139,14 +139,14 @@ def test_7_bpp_batch():
 
     csv_path = RESULTS_DIR / "bpp_batch_example.csv"
     save_results_csv(rows, csv_path)
-    print("Zapisano wyniki batch BPP do:", csv_path)
+    print("Saved BPP batch results to:", csv_path)
 
 
 def test_8_vrp_batch():
     instances = []
     for i in range(5):
         inst = generate_random_vrp(
-            n_customers=25,
+            n_customers=15,
             area_size=100.0,
             demand_min=1,
             demand_max=10,
@@ -170,11 +170,11 @@ def test_8_vrp_batch():
 
     csv_path = RESULTS_DIR / "vrp_batch_example.csv"
     save_results_csv(rows, csv_path)
-    print("Zapisano wyniki batch VRP do:", csv_path)
+    print("Saved VRP batch results to:", csv_path)
 
 
 if __name__ == "__main__":
-    test_1_bpp_txt_to_dzn()
+    # test_1_bpp_txt_to_dzn()
     # test_2_vrp_txt_to_dzn()
     # test_3_bpp_generate_to_dzn()
     # test_4_vrp_generate_to_dzn()

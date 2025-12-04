@@ -66,6 +66,8 @@ def generate_random_bpp(
         rng.randint(min_size, max_size) for _ in range(n)
     ]
 
+    sizes.sort(reverse=True)
+
     return BPPInstance(
         n=n,
         capacity=capacity,
