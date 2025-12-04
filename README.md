@@ -22,7 +22,7 @@ Located in `Scripts/`, the package provides:
 
 ### Automated experiment pipeline
 Generate → Convert → Solve → Collect → Export → Analyse  
-All in one consistent workflow.
+All in one workflow.
 
 ### Playground for manual testing
 A set of interactive scripts for testing small toy examples before scaling up.
