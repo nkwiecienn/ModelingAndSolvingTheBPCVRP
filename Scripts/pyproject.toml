@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bpcvrp-testing"
+version = "0.1.0"
+description = "A library for modeling and solving the Bin Packing and Capacitated Vehicle Routing Problem"
+requires-python = ">=3.8"
+dependencies = [
+    "minizinc>=0.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "black>=21.0",
+    "pylint>=2.0",
+]
+
+[tool.setuptools]
+packages = ["bpcvrp_testing"]
+
+[tool.setuptools.package-data]
+bpcvrp_testing = ["py.typed"]

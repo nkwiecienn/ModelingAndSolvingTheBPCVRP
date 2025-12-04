@@ -11,7 +11,7 @@ from bpcvrp_testing.solvers.minizinc_runner import MiniZincRunner
 from bpcvrp_testing.experiments.batch_runner import run_batch, save_results_csv
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent  # Scripts/
 DATA_DIR = BASE_DIR / "data"
 MODELS_DIR = BASE_DIR / "models"
 RESULTS_DIR = BASE_DIR / "results"
@@ -29,8 +29,8 @@ def test_1_bpp_txt_to_dzn():
 
 
 def test_2_vrp_txt_to_dzn():
-    vrp_path = DATA_DIR / "vrp_txt" / "P-n16-k8.vrp"
-    dzn_path = DATA_DIR / "vrp_dzn" / (vrp_path.name + ".dzn")
+    vrp_path = DATA_DIR / "vrp_txt" / "P-n16-k8.vrp.txt"
+    dzn_path = DATA_DIR / "vrp_dzn" / (vrp_path.stem + ".dzn")
 
     inst = load_txt_vrp(vrp_path)
     print("VRP from txt: N, Capacity =", inst.N, inst.Capacity)
@@ -174,7 +174,7 @@ def test_8_vrp_batch():
 
 
 if __name__ == "__main__":
-    # test_1_bpp_txt_to_dzn()
+    test_1_bpp_txt_to_dzn()
     # test_2_vrp_txt_to_dzn()
     # test_3_bpp_generate_to_dzn()
     # test_4_vrp_generate_to_dzn()

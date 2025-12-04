@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Protocol, Union
 
-from instances import BPPInstance
-from instances import VRPInstance
+from ..instances.bpp_instance import BPPInstance
+from ..instances.vrp_instance import VRPInstance
 
 
 PathLike = Union[str, Path]
