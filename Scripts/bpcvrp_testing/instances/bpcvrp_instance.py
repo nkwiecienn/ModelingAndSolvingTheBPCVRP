@@ -33,7 +33,6 @@ class BPCVRPInstance:
             int: binCapacity;
             array[1..N, 1..maxItemsPerCustomer] of int: SizesOfItems;
         """
-        # Prosta walidacja wymiarów (żeby wcześniej złapać błędy)
         # Basic dimension validation (to catch errors early)
 
         return {
