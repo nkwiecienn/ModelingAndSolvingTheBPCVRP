@@ -6,7 +6,7 @@ This repository provides an environment for generating, converting, solving, and
 - **VRP** – Vehicle Routing Problem  
 - **BPCVRP** – The integrated Bin Packing + Capacitated Vehicle Routing Problem  
 
-The framework is written in **Python**, uses **MiniZinc** as the underlying solver engine, and is designed for both **research purposes** and **extensive experimentation** on automatically generated or benchmark instances.
+The framework is written in **Python**, uses **MiniZinc** as the underlying solver engine.
 
 
 ## Key Features
