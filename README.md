@@ -8,27 +8,6 @@ This repository provides an environment for generating, converting, solving, and
 
 The framework is written in **Python**, uses **MiniZinc** as the underlying solver engine, and is designed for both **research purposes** and **extensive experimentation** on automatically generated or benchmark instances.
 
----
-
-## Repository Structure
-
-BBCVRP/
-├── Scripts/ # Python library: instances, generators, IO tools, solvers, experiments
-│
-├── BPP/ # MiniZinc model for the Bin Packing Problem
-│ ├── bpp_002.mzn
-│ └── README.md # Short description of the BPP model
-│
-├── VRP/ # MiniZinc model for the Vehicle Routing Problem
-│ ├── vrp_002.mzn
-│ └── README.md # Short description of the VRP model
-│
-└── BPCVRP/ # MiniZinc model integrating BPP + VRP
-├── bpcvrp_001.mzn
-└── README.md # Short description of the BPCVRP model
-
-
----
 
 ## Key Features
 

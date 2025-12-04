@@ -5,14 +5,15 @@ It provides all tools required to load, generate, convert, solve, and benchmark 
 
 The module is structured as follows:
 
+```
 Scripts/
 ├── instances/ # Data classes: BPPInstance, VRPInstance, BPCVRPInstance
 ├── generators/ # Random instance generators for BPP, VRP, BPCVRP
 ├── io/ # load_txt_bpp, load_txt_vrp, save_as_dzn, other utilities
-├── solvers/ # MiniZincRunner: unified API for running MiniZinc models
+├── solvers/ # MiniZincRunner: API for running MiniZinc models
 ├── experiments/ # Batch experiment runner + CSV output utilities
-└── playground/ # Interactive scripts for manual testing and debugging
-
+└── playground/ # Scripts for manual testing and debugging
+```
 
 ---
 
