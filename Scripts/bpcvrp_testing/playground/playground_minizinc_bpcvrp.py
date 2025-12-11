@@ -18,7 +18,7 @@ def test_1_bpcvrp_generate_to_dzn():
     Generates a single BPCVRP instance and saves it to a .dzn file.
     """
     inst = generate_random_bpcvrp(
-        n_customers=4,
+        n_customers=6,
         area_size=100.0,
         instance_type="clustered",
         # VRP
@@ -55,7 +55,7 @@ def test_2_bpcvrp_generate_and_solve():
     Generates a single BPCVRP instance and solves it via MiniZincRunner.
     """
     inst = generate_random_bpcvrp(
-        n_customers=8,
+        n_customers=7,
         area_size=80.0,
         instance_type="uniform",
         demand_min=1,
@@ -70,7 +70,7 @@ def test_2_bpcvrp_generate_and_solve():
         max_items_per_customer=5,
         seed=42,
     )
-    inst.name = "bpcvrp_n8_uniform_seed42"
+    inst.name = "bpcvrp_n7_uniform_seed42"
 
     model_path = MODELS_DIR / "bpcvrp_001.mzn"
     runner = MiniZincRunner(model_path, solver_name="chuffed")

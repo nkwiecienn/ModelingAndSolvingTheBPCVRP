@@ -48,6 +48,17 @@ class BPPInstance:
             "capacity": self.capacity,
             "size": list(self.sizes),
         }
+    
+    def to_ortools(self) -> Dict[str, Any]:
+        """
+        Dictionary in format used by OR-Tools CP-SAT solver.
+        """
+        return {
+            "weights": list(self.sizes),
+            "items": self.n,
+            "bins": self.n,
+            "bin_capacity": self.capacity
+        }
 
     def to_dzn(self) -> str:
         """

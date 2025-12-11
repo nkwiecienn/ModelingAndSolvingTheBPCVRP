@@ -20,6 +20,20 @@ class VRPInstance:
     Demand: List[int]
     Distance: List[List[int]]
 
+    def __str__(self) -> str:
+        """String representation of the VRP instance."""
+        distance_str = "\n".join(
+            "  " + str(row) for row in self.Distance
+        )
+        return (
+            f"VRPInstance(\n"
+            f"  N={self.N},\n"
+            f"  Capacity={self.Capacity},\n"
+            f"  Demand={self.Demand},\n"
+            f"  Distance=[\n{distance_str}\n  ]\n"
+            f")"
+        )
+
     @classmethod
     def from_txt(cls, path: str) -> "VRPInstance":
         """
@@ -153,6 +167,19 @@ class VRPInstance:
             "Demand": list(self.Demand),
             "Distance": [list(row) for row in self.Distance],
         }
+    
+    def to_ortools(self) -> Dict[str, any]:
+        """
+        Dictionary in format used by OR-Tools CP-SAT solver.
+        """
+        return {
+            "distance_matrix": [list(row) for row in self.Distance],
+            "demands": [0] + list(self.Demand),
+            "vehicle_capacities": [self.Capacity for _ in range(self.N)],
+            "num_vehicles": self.N,
+            "depot": 0
+        }
+
 
     def to_dzn(self) -> str:
         """

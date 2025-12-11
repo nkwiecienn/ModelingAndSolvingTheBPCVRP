@@ -104,6 +104,8 @@ def test_6_vrp_generate_and_solve():
         seed=99,
     )
 
+    print(str(inst))
+
     model_path = MODELS_DIR / "vrp_002.mzn"
     runner = MiniZincRunner(model_path, solver_name="chuffed")
 
