@@ -2,14 +2,11 @@
     "openFiles": [
         "vrp_001.mzn",
         "vrp_002.mzn",
-        "../Data/Random/n10.dzn",
-        "../Data/Random/n6.dzn",
-        "../Data/Random/n7.dzn",
-        "../Data/Random/n8.dzn",
-        "../Data/Random/n9.dzn"
+        "vrp_003_split_delivery.mzn"
     ],
-    "openTab": 4,
+    "openTab": 2,
     "projectFiles": [
+        "../../001_BPP/MiniZincModel/bpp_002.mzn",
         "../Data/Random/n10.dzn",
         "../Data/Random/n5.dzn",
         "../Data/Random/n6.dzn",
@@ -17,7 +14,8 @@
         "../Data/Random/n8.dzn",
         "../Data/Random/n9.dzn",
         "vrp_001.mzn",
-        "vrp_002.mzn"
+        "vrp_002.mzn",
+        "vrp_003_split_delivery.mzn"
     ],
     "selectedBuiltinConfigId": "org.gecode.gecode",
     "selectedBuiltinConfigVersion": "6.3.0",
