@@ -42,7 +42,7 @@ A set of interactive scripts for testing small toy examples before scaling up.
 Clone and initialise the environment:
 
 ```bash
-git clone https://github.com/<your-name>/BBCVRP.git
+git clone https://github.com/nkwiecienn/ModelingAndSolvingTheBPCVRP
 cd BBCVRP
 python -m venv .venv
 source .venv/bin/activate
