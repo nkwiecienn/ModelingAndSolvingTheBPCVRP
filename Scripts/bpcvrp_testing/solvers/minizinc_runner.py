@@ -51,12 +51,14 @@ class MiniZincRunner:
         self.model = minizinc.Model(str(self.model_path))
         self.solver = minizinc.Solver.lookup(solver_name)
 
+
     def solve(
         self,
         data: Dict[str, Any],
         time_limit: Optional[float] = None,
         all_solutions: bool = False,
         free_search: bool = False,
+        threads: Optional[int] = None,
         **kwargs: Any,
     ) -> SolveResult:
         """Run the model for the given input data.
@@ -89,6 +91,9 @@ class MiniZincRunner:
         tl: Optional[dt.timedelta] = None
         if time_limit is not None:
             tl = dt.timedelta(seconds=float(time_limit))
+
+        if threads is not None:
+            kwargs["processes"] = int(threads)
 
         start = time.perf_counter()
         result = inst.solve(

@@ -76,7 +76,7 @@ def test_1_sdvrp_generate_to_dzn():
     and saves it to a .dzn file.
     """
     inst = generate_random_sdvrp(
-        n_customers=6,
+        n_customers=4,
         area_size=100.0,
         vehicle_capacity=40,
         demand_min=5,
@@ -85,7 +85,7 @@ def test_1_sdvrp_generate_to_dzn():
         fraction_oversized=0.30,
         seed=123,
     )
-    inst.name = "sdvrp_n6_seed123"
+    inst.name = "sdvrp_n4_seed123"
 
     out_dir = DATA_DIR / "sdvrp_dzn"
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -104,7 +104,7 @@ def test_2_sdvrp_generate_and_solve():
     Prints a few SD-specific metrics to quickly confirm splitting happens when needed.
     """
     inst = generate_random_sdvrp(
-        n_customers=10,
+        n_customers=4,
         area_size=80.0,
         vehicle_capacity=35,
         demand_min=5,
@@ -113,12 +113,12 @@ def test_2_sdvrp_generate_and_solve():
         fraction_oversized=0.35,
         seed=42,
     )
-    inst.name = "sdvrp_n10_seed42"
+    inst.name = "sdvrp_n4_seed42"
 
     model_path = MODELS_DIR / "vrp_003_split_delivery.mzn"
-    runner = MiniZincRunner(model_path, solver_name="chuffed")
+    runner = MiniZincRunner(model_path, solver_name="cp-sat")
 
-    res = runner.solve_instance(inst, time_limit=120)
+    res = runner.solve_instance(inst, time_limit=120, threads=12)
 
     print("SDVRP solve status:", res.status)
     print("Objective:", res.objective)
@@ -137,7 +137,7 @@ def test_3_sdvrp_batch():
     instances = []
     for s in range(5):
         inst = generate_random_sdvrp(
-            n_customers=25,
+            n_customers=5,
             area_size=100.0,
             vehicle_capacity=50,
             demand_min=5,
@@ -146,21 +146,22 @@ def test_3_sdvrp_batch():
             fraction_oversized=0.25,
             seed=s,
         )
-        inst.name = f"sdvrp_n25_seed{s}"
+        inst.name = f"sdvrp_n5_seed{s}"
         instances.append(inst)
 
     model_path = MODELS_DIR / "vrp_003_split_delivery.mzn"
     rows = run_batch(
         instances,
         model_path=model_path,
-        solver_name="chuffed",
+        solver_name="cp-sat",
         time_limit=300.0,
+        threads=24,
         print_progress=True,
         extra_metrics_fn=lambda inst, res: _sd_metrics(inst, res),
     )
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    csv_path = RESULTS_DIR / "sdvrp_batch_example.csv"
+    csv_path = RESULTS_DIR / "sdvrp_batch_24threads.csv"
     save_results_csv(rows, csv_path)
     print("Saved SDVRP batch results to:", csv_path)
 
@@ -171,7 +172,7 @@ def test_4_sdvrp_tiny_debug():
     Intentionally includes oversized demands so split deliveries are exercised.
     """
     inst = generate_random_sdvrp(
-        n_customers=6,
+        n_customers=5,
         area_size=50.0,
         vehicle_capacity=20,
         demand_min=5,
@@ -200,8 +201,8 @@ def test_4_sdvrp_tiny_debug():
 
 
 if __name__ == "__main__":
-    test_1_sdvrp_generate_to_dzn()
+    # test_1_sdvrp_generate_to_dzn()
     # test_2_sdvrp_generate_and_solve()
-    # test_3_sdvrp_batch()
+    test_3_sdvrp_batch()
     # test_4_sdvrp_tiny_debug()
     pass

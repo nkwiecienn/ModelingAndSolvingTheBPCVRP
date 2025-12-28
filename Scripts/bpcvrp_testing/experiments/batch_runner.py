@@ -41,6 +41,7 @@ def run_batch(
     model_path: PathLike,
     solver_name: str,
     time_limit: Optional[float] = None,
+    threads: Optional[int] = None,
     print_progress: bool = True,
     extra_metrics_fn: Optional[Callable[[HasToDict, SolveResult], Dict[str, Any]]] = None,
 ) -> List[Dict[str, Any]]:
@@ -92,7 +93,7 @@ def run_batch(
         inst_name = _instance_name(inst, idx)
         problem_type = type(inst).__name__
 
-        res: SolveResult = runner.solve_instance(inst, time_limit=time_limit)
+        res: SolveResult = runner.solve_instance(inst, time_limit=time_limit, threads=threads)
 
         if time_limit is not None:
             timed_out = (not res.has_solution) or (res.time >= time_limit - 1e-3)
@@ -109,7 +110,6 @@ def run_batch(
             "timed_out": timed_out,
         }
 
-        # ✅ Optional: add problem-specific metrics (e.g., SDVRP splits)
         if extra_metrics_fn is not None:
             try:
                 extra = extra_metrics_fn(inst, res)
