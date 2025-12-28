@@ -2,10 +2,9 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Protocol, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Protocol, Union
 
 from ..solvers.minizinc_runner import MiniZincRunner, SolveResult
-
 
 PathLike = Union[str, Path]
 
@@ -15,18 +14,17 @@ class HasToDict(Protocol):
 
 
 def _instance_name(instance: Any, index: int) -> str:
-    """Try to produce a readable name for an instance:
+    """Try to produce a readable name for an instance.
 
-    - use `.name` if present and non-empty
-    - else use the basename of `.filename` or `.path` if available
-    - otherwise return a generic `instance_<i>` string
+    Priority:
+    1) use `.name` if present and non-empty
+    2) else use the basename of `.filename` or `.path` if available
+    3) otherwise return `instance_<i>`
     """
-    # 1) .name
     name = getattr(instance, "name", None)
     if isinstance(name, str) and name.strip():
         return name
 
-    # 2) .filename / .path
     for attr in ("filename", "path"):
         p = getattr(instance, attr, None)
         if p is not None:
@@ -35,7 +33,6 @@ def _instance_name(instance: Any, index: int) -> str:
             except TypeError:
                 pass
 
-    # 3) fallback
     return f"instance_{index}"
 
 
@@ -45,37 +42,31 @@ def run_batch(
     solver_name: str,
     time_limit: Optional[float] = None,
     print_progress: bool = True,
+    extra_metrics_fn: Optional[Callable[[HasToDict, SolveResult], Dict[str, Any]]] = None,
 ) -> List[Dict[str, Any]]:
     """
     Run a batch of experiments for the given iterable of instances and a MiniZinc model.
 
     Parameters
     ----------
-    instances: Iterable[HasToDict]
-        Objects providing a `.to_dict()` method. Examples: `BPPInstance`, `VRPInstance`, `BPCVRPInstance`.
-    model_path: str | Path
-        Path to the `.mzn` model file (e.g. 'models/bpp_002.mzn').
-    solver_name: str
+    instances:
+        Objects providing a `.to_dict()` method.
+    model_path:
+        Path to the `.mzn` model file.
+    solver_name:
         MiniZinc solver identifier (e.g. 'chuffed', 'gecode', 'cbc').
-    time_limit: float | None
-        Time limit in seconds per instance. If None → no time limit.
-    print_progress: bool
-        Whether to print progress to stdout during the run.
+    time_limit:
+        Time limit in seconds per instance. If None -> no time limit.
+    print_progress:
+        Whether to print progress to stdout.
+    extra_metrics_fn:
+        Optional callback that extracts additional metrics from (instance, solve_result).
+        Returned dict is merged into the CSV row.
 
     Returns
     -------
     List[Dict[str, Any]]
-        A list of result rows (dicts) for each instance. Example row keys:
-        {
-            "instance": str,
-            "problem_type": str,
-            "status": str,
-            "has_solution": bool,
-            "objective": float | None,
-            "time_sec": float,
-            "timed_out": bool | None,
-            ... (other fields may appear)
-        }
+        A list of per-instance result rows.
     """
     model_path = Path(model_path)
     runner = MiniZincRunner(model_path, solver_name)
@@ -118,6 +109,15 @@ def run_batch(
             "timed_out": timed_out,
         }
 
+        # ✅ Optional: add problem-specific metrics (e.g., SDVRP splits)
+        if extra_metrics_fn is not None:
+            try:
+                extra = extra_metrics_fn(inst, res)
+                if isinstance(extra, dict):
+                    row.update(extra)
+            except Exception as e:
+                row["extra_metrics_error"] = str(e)
+
         results.append(row)
 
         if print_progress:
@@ -139,16 +139,8 @@ def save_results_csv(results: List[Dict[str, Any]], path: PathLike) -> None:
     """
     Write a list of result dictionaries to a CSV file.
 
-    The function is intentionally generic:
-    - it collects all keys appearing in any row
+    - collects all keys appearing in any row
     - writes them as CSV columns (missing values become empty cells)
-
-    Parameters
-    ----------
-    results: List[dict]
-        Results produced, e.g., by `run_batch()`.
-    path: str | Path
-        Path to the output CSV file.
     """
     if not results:
         Path(path).write_text("", encoding="utf-8")
