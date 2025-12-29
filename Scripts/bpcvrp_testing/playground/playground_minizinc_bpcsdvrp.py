@@ -128,9 +128,9 @@ def test_2_bpcsdvrp_generate_and_solve():
     inst.name = "bpcsdvrp_n4_seed42"
 
     model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
-    runner = MiniZincRunner(model_path, solver_name="chuffed")
+    runner = MiniZincRunner(model_path, solver_name="cp-sat")
 
-    res = runner.solve_instance(inst, time_limit=300)
+    res = runner.solve_instance(inst, time_limit=300, threads=24)
 
     print("BP–SDVRP solve status:", res.status)
     print("Objective (travel time / distance):", res.objective)
@@ -149,7 +149,7 @@ def test_3_bpcsdvrp_batch():
     instances = []
     for s in range(5):
         inst = generate_random_bpcsdvrp(
-            n_customers=4,
+            n_customers=5,
             area_size=100.0,
             instance_type="mixed",
 
@@ -166,15 +166,16 @@ def test_3_bpcsdvrp_batch():
             fraction_split_customers=0.25,
             seed=s,
         )
-        inst.name = f"bpcsdvrp_n18_seed{s}"
+        inst.name = f"bpcsdvrp_n5_seed{s}"
         instances.append(inst)
 
     model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
     rows = run_batch(
         instances,
         model_path=model_path,
-        solver_name="chuffed",
+        solver_name="cp-sat",
         time_limit=600.0,
+        threads=24,
         print_progress=True,
         extra_metrics_fn=lambda inst, res: _sd_metrics_from_solution(
             inst.N, inst.maxVisitsPerCustomer, res.solution or {}
@@ -218,8 +219,8 @@ def test_4_bpcsdvrp_tiny_debug():
     print("Tiny BP–SDVRP saved to:", dzn_path)
 
     model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
-    runner = MiniZincRunner(model_path, solver_name="chuffed")
-    res = runner.solve_instance(inst, time_limit=120)
+    runner = MiniZincRunner(model_path, solver_name="cp-sat")
+    res = runner.solve_instance(inst, time_limit=120, threads=24)
 
     print("Tiny BP–SDVRP status:", res.status)
     print("Objective:", res.objective)
