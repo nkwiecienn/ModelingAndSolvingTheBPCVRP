@@ -93,20 +93,20 @@ set of int: START_DEPOT_NODES = firstStartDepot .. (firstStartDepot + nbVehicles
 set of int: END_DEPOT_NODES   = firstEndDepot   .. (firstEndDepot   + nbVehicles - 1);
 set of int: DEPOT_NODES = START_DEPOT_NODES union END_DEPOT_NODES;
 
-function int: origCustomer(int: n) =
+function var int: origCustomer(var int: n) =
   1 + ((n - 1) div maxVisitsPerCustomer);
 
-function bool: isDepot(int: n) = n in DEPOT_NODES;
-function bool: isCopy(int: n)  = n in CUSTOMER_COPIES;
+function var bool: isDepot(var int: n) = n in DEPOT_NODES;
+function var bool: isCopy(var int: n)  = n in CUSTOMER_COPIES;
 
 % Map any node to Distance indices: 1 = depot, 2..N+1 = customers
-function int: loc(int: n) =
+function var int: loc(var int: n) =
   if isDepot(n) then 1 else origCustomer(n) + 1 endif;
 
 % Distance in giant tour:
 % - depot-to-depot connectors treated as 0
 % - copies of the same customer have 0 distance between them
-function int: dist(int: a, int: b) =
+function var int: dist(int: a, var int: b) =
   if isDepot(a) /\ isDepot(b) then 0
   elseif isCopy(a) /\ isCopy(b) /\ origCustomer(a) = origCustomer(b) then 0
   else Distance[loc(a), loc(b)]

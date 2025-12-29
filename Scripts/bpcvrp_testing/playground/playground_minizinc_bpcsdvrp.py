@@ -127,7 +127,6 @@ def test_2_bpcsdvrp_generate_and_solve():
     )
     inst.name = "bpcsdvrp_n4_seed42"
 
-    # TODO: rename to your actual combined model filename
     model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
     runner = MiniZincRunner(model_path, solver_name="chuffed")
 
@@ -231,8 +230,8 @@ def test_4_bpcsdvrp_tiny_debug():
 
 
 if __name__ == "__main__":
-    test_1_bpcsdvrp_generate_to_dzn()
-    # test_2_bpcsdvrp_generate_and_solve()
+    # test_1_bpcsdvrp_generate_to_dzn()
+    test_2_bpcsdvrp_generate_and_solve()
     # test_3_bpcsdvrp_batch()
     # test_4_bpcsdvrp_tiny_debug()
     pass
