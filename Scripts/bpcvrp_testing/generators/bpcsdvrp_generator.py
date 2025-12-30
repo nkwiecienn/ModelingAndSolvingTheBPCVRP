@@ -47,7 +47,7 @@ def generate_random_bpcsdvrp(
     seed: Optional[int] = None,
 ) -> BPCSDVRPInstance:
     """
-    Generate a random BP–SDVRP instance.
+    Generate a random BP-SDVRP instance.
 
     Design goal
     -----------

@@ -15,7 +15,7 @@ int: maxVisitsPerCustomer;
 set of int: CUSTOMER = 1..N;
 set of int: VEHICLE  = 1..nbVehicles;
 
-% A safe time horizon built only from customer–customer distances
+% A safe time horizon built only from customer-customer distances
 int: timeBudget = sum(i in 2..N+1)(max([Distance[i,j] | j in 2..N+1]));
 set of int: TIME = 0..timeBudget;
 set of int: LOAD = 0..Capacity;

@@ -1,4 +1,4 @@
-# Scripts – Python Toolkit for BPP, VRP, and BPCVRP
+# Scripts - Python Toolkit for BPP, VRP, and BPCVRP
 
 This directory contains the **main Python package** used by the BBCVRP framework.  
 It provides all tools required to load, generate, convert, solve, and benchmark problem instances.

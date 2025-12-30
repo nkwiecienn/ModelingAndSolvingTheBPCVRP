@@ -2,9 +2,9 @@
 
 This repository provides an environment for generating, converting, solving, and benchmarking:
 
-- **BPP** – Bin Packing Problem  
-- **VRP** – Vehicle Routing Problem  
-- **BPCVRP** – The integrated Bin Packing + Capacitated Vehicle Routing Problem  
+- **BPP** - Bin Packing Problem  
+- **VRP** - Vehicle Routing Problem  
+- **BPCVRP** - The integrated Bin Packing + Capacitated Vehicle Routing Problem  
 
 The framework is written in **Python**, uses **MiniZinc** as the underlying solver engine.
 
@@ -17,7 +17,7 @@ Located in `Scripts/`, the package provides:
 - **Instance classes** (`BPPInstance`, `VRPInstance`, `BPCVRPInstance`)
 - **Generators** for random BPP/VRP/BPCVRP instances
 - **IO utilities** to load `.txt` and export `.dzn`
-- **MiniZincRunner** – a unified API for executing MiniZinc models
+- **MiniZincRunner** - a unified API for executing MiniZinc models
 - **Batch experiment tools** for running many instances at once
 
 ### Automated experiment pipeline

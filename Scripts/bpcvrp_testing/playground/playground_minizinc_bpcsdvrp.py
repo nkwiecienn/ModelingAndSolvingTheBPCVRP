@@ -65,7 +65,7 @@ def _sd_metrics_from_solution(N: int, maxVisitsPerCustomer: int, sol: Dict[str, 
 
 def test_1_bpcsdvrp_generate_to_dzn():
     """
-    Generates a single BP–SDVRP instance and saves it to a .dzn file.
+    Generates a single BP-SDVRP instance and saves it to a .dzn file.
     """
     inst = generate_random_bpcsdvrp(
         n_customers=4,
@@ -94,7 +94,7 @@ def test_1_bpcsdvrp_generate_to_dzn():
     out_dir.mkdir(parents=True, exist_ok=True)
     dzn_path = out_dir / f"{inst.name}.dzn"
 
-    print(f"Generated BP–SDVRP: N={inst.N}, nbVehicles={inst.nbVehicles}, "
+    print(f"Generated BP-SDVRP: N={inst.N}, nbVehicles={inst.nbVehicles}, "
           f"Capacity(pallets)={inst.Capacity}, maxVisits={inst.maxVisitsPerCustomer}, "
           f"binCapacity={inst.binCapacity}")
     print(f"ItemsPerCustomer: {inst.ItemsPerCustomer}")
@@ -105,34 +105,34 @@ def test_1_bpcsdvrp_generate_to_dzn():
 
 def test_2_bpcsdvrp_generate_and_solve():
     """
-    Generates a single BP–SDVRP instance and solves it via MiniZincRunner.
+    Generates a single BP-SDVRP instance and solves it via MiniZincRunner.
     """
     inst = generate_random_bpcsdvrp(
         n_customers=4,
-        area_size=80.0,
+        area_size=40.0,
         instance_type="uniform",
 
         maxVisitsPerCustomer=3,
-        nbVehicles=4,
+        nbVehicles=12,
         vehicle_capacity=4,
 
-        bin_capacity=40,
+        bin_capacity=10,
         min_item_ratio=0.2,
         max_item_ratio=0.8,
-        min_items_per_customer=3,
-        max_items_per_customer=12,
+        min_items_per_customer=5,
+        max_items_per_customer=10,
 
         fraction_split_customers=0.30,
         seed=42,
     )
-    inst.name = "bpcsdvrp_n4_seed42"
+    inst.name = "bpcsdvrp_n4_notimelimit"
 
     model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
     runner = MiniZincRunner(model_path, solver_name="cp-sat")
 
-    res = runner.solve_instance(inst, time_limit=300, threads=24)
+    res = runner.solve_instance(inst, threads=24)
 
-    print("BP–SDVRP solve status:", res.status)
+    print("BP-SDVRP solve status:", res.status)
     print("Objective (travel time / distance):", res.objective)
     print("Time [s]:", res.time)
 
@@ -143,13 +143,13 @@ def test_2_bpcsdvrp_generate_and_solve():
 
 def test_3_bpcsdvrp_batch():
     """
-    Generates several BP–SDVRP instances and runs them via batch runner.
+    Generates several BP-SDVRP instances and runs them via batch runner.
     Adds split-delivery metrics into the CSV output.
     """
     instances = []
-    for s in range(5):
+    for s in range(3):
         inst = generate_random_bpcsdvrp(
-            n_customers=5,
+            n_customers=4,
             area_size=100.0,
             instance_type="mixed",
 
@@ -157,11 +157,11 @@ def test_3_bpcsdvrp_batch():
             nbVehicles=5,
             vehicle_capacity=5,
 
-            bin_capacity=50,
+            bin_capacity=10,
             min_item_ratio=0.2,
             max_item_ratio=0.8,
-            min_items_per_customer=3,
-            max_items_per_customer=12,
+            min_items_per_customer=1,
+            max_items_per_customer=5,
 
             fraction_split_customers=0.25,
             seed=s,
@@ -174,7 +174,7 @@ def test_3_bpcsdvrp_batch():
         instances,
         model_path=model_path,
         solver_name="cp-sat",
-        time_limit=600.0,
+        time_limit=3600.0,
         threads=24,
         print_progress=True,
         extra_metrics_fn=lambda inst, res: _sd_metrics_from_solution(
@@ -185,12 +185,12 @@ def test_3_bpcsdvrp_batch():
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     csv_path = RESULTS_DIR / "bpcsdvrp_batch_example.csv"
     save_results_csv(rows, csv_path)
-    print("Saved BP–SDVRP batch results to:", csv_path)
+    print("Saved BP-SDVRP batch results to:", csv_path)
 
 
 def test_4_bpcsdvrp_tiny_debug():
     """
-    Very small BP–SDVRP instance for manual inspection / model debugging.
+    Very small BP-SDVRP instance for manual inspection / model debugging.
     """
     inst = generate_random_bpcsdvrp(
         n_customers=5,
@@ -204,8 +204,8 @@ def test_4_bpcsdvrp_tiny_debug():
         bin_capacity=30,
         min_item_ratio=0.2,
         max_item_ratio=0.8,
-        min_items_per_customer=3,
-        max_items_per_customer=10,
+        min_items_per_customer=1,
+        max_items_per_customer=5,
 
         fraction_split_customers=0.40,
         seed=7,
@@ -216,13 +216,13 @@ def test_4_bpcsdvrp_tiny_debug():
     out_dir.mkdir(parents=True, exist_ok=True)
     dzn_path = out_dir / f"{inst.name}.dzn"
     save_as_dzn(inst, dzn_path)
-    print("Tiny BP–SDVRP saved to:", dzn_path)
+    print("Tiny BP-SDVRP saved to:", dzn_path)
 
     model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
     runner = MiniZincRunner(model_path, solver_name="cp-sat")
     res = runner.solve_instance(inst, time_limit=120, threads=24)
 
-    print("Tiny BP–SDVRP status:", res.status)
+    print("Tiny BP-SDVRP status:", res.status)
     print("Objective:", res.objective)
     print("Time [s]:", res.time)
 

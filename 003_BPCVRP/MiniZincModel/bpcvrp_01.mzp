@@ -1,12 +1,14 @@
 {
     "openFiles": [
         "bpcvrp_001.mzn",
-        "bpcvrp_002_split_deliveries.mzn"
+        "bpcvrp_002_split_deliveries.mzn",
+        "bpcvrp_003_grouped_sd.mzn"
     ],
-    "openTab": 1,
+    "openTab": 2,
     "projectFiles": [
         "bpcvrp_001.mzn",
-        "bpcvrp_002_split_deliveries.mzn"
+        "bpcvrp_002_split_deliveries.mzn",
+        "bpcvrp_003_grouped_sd.mzn"
     ],
     "selectedBuiltinConfigId": "org.gecode.gecode",
     "selectedBuiltinConfigVersion": "6.3.0",

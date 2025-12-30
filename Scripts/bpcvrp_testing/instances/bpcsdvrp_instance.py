@@ -37,7 +37,7 @@ class BPCSDVRPInstance:
     name: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
-        """Return a dict of input data for the BP–SDVRP MiniZinc model."""
+        """Return a dict of input data for the BP-SDVRP MiniZinc model."""
         return {
             "N": self.N,
             "Capacity": self.Capacity,
@@ -53,7 +53,7 @@ class BPCSDVRPInstance:
         }
 
     def to_dzn(self) -> str:
-        """Return a .dzn text compatible with the BP–SDVRP model."""
+        """Return a .dzn text compatible with the BP-SDVRP model."""
         lines: List[str] = []
 
         lines.append(f"N = {self.N};")
