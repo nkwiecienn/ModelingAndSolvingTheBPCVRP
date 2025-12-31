@@ -16,7 +16,7 @@ set of int: CUSTOMER = 1..N;
 set of int: VEHICLE  = 1..nbVehicles;
 
 % A safe time horizon built only from customer-customer distances
-int: timeBudget = sum(i in 2..N+1)(max([Distance[i,j] | j in 2..N+1]));
+int: timeBudget = nbVehicles * sum(i in 1..N+1)( max([ Distance[i,j] | j in 1..N+1 ]) );
 set of int: TIME = 0..timeBudget;
 set of int: LOAD = 0..Capacity;
 
@@ -200,5 +200,5 @@ constraint forall(n in START_DEPOT_NODES)(
 % ------------------------------------------------------------
 % Objective
 % ------------------------------------------------------------
-var TIME: objective = sum(d in END_DEPOT_NODES)(arrivalTime[d]);
+var int: objective = sum(d in END_DEPOT_NODES)(arrivalTime[d]);
 solve minimize objective;

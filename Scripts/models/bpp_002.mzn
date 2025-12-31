@@ -28,9 +28,4 @@ constraint forall(i in I)(b[i] <= i);                                           
 constraint forall(i, k in I where i < k /\ size[i] = size[k])(b[i] <= b[k]);       % for items with the same size, earlier index is not in a later bin
 constraint nBins = max(i in I)(b[i]);                                              % define number of bins
 % ---------------- Search ----------------
-solve
-  :: seq_search([
-        int_search([nBins], input_order, indomain_min, complete),
-        int_search([b[i] | i in I], first_fail, indomain_min, complete)
-     ])
-  minimize nBins;
+solve minimize nBins;

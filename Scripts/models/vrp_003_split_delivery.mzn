@@ -16,7 +16,7 @@ int: nbVehicles;                % upper bound on number of vehicles
 int: maxVisitsPerCustomer;      % number of copy-nodes per customer (visit bound)
 
 % Derived bound for time variables (same spirit as benchmark models)
-int: timeBudget = sum(i in 1..N+1)( max(j in 1..N+1)(Distance[i,j]) );
+int: timeBudget = nbVehicles * sum(i in 1..N+1)( max([ Distance[i,j] | j in 1..N+1 ]) );
 
 set of int: CUSTOMER = 1..N;
 set of int: VEHICLE  = 1..nbVehicles;

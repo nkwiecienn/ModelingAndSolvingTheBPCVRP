@@ -7,7 +7,7 @@ int: Capacity; % maximum capacity of each vehicle
 
 int: nbVehicles = N; % maximum number of vehicles
 int: nbCustomers = N;
-int: timeBudget = sum (i in 1..N) (max([ Distance[i,j] | j in 1..N]) ); % the maximal of time that we got
+int: timeBudget = sum(i in 1..N+1)( max([ Distance[i,j] | j in 1..N+1 ]) );
 
 set of int: VEHICLE = 1..nbVehicles;
 set of int: CUSTOMER = 1..nbCustomers;
@@ -52,7 +52,7 @@ array[NODES] of var NODES: predecessor; % redundant predecessor variables
 array[NODES] of var VEHICLE: vehicle; % which vehicle visits which customer?
 array[NODES] of var LOAD: load; % load when arriving at node n in NODES
 array[NODES] of var TIME: arrivalTime; % the time at which the vehicle serving node i will arrive at i
-var 0..timeBudget: objective;
+var 0..nbVehicles*timeBudget: objective;
 
 % =================================================%
 % Constraints
@@ -167,12 +167,7 @@ constraint
 constraint
  objective = sum (depot in END_DEPOT_NODES) (arrivalTime[depot]);
 
-solve :: seq_search([int_search([successor[j] | j in NODES], first_fail, indomain_split, complete),
-               int_search(vehicle, first_fail, indomain_split, complete),
-               int_search([arrivalTime[j] | j in NODES],first_fail, indomain_min, complete),
-               int_search([load[j] | j in NODES], first_fail, indomain_min, complete)
-              ])   
-minimize objective; % traveltime
+solve minimize objective; % traveltime
 
 
 

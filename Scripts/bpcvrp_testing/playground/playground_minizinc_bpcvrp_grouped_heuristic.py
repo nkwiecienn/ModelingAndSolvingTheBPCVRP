@@ -72,7 +72,6 @@ def test_2_run_grouped_heuristic():
     )
     inst.name = "bpcvrp_heuristic_demo"
 
-    # You provide these models:
     bpp_model_path = MODELS_DIR / "bpp_002.mzn"
     vrp_grouped_model_path = MODELS_DIR / "vrp_004_grouped_orders.mzn"
 
@@ -84,7 +83,7 @@ def test_2_run_grouped_heuristic():
         time_limit_per_customer=10.0,
         time_limit_vrp=300.0,
         fallback="volume_lb",
-        nbVehicles=None,  # use N_remaining as upper bound (same style as vrp_002)
+        nbVehicles=None,
     )
 
     print("\n--- Palletisation summary ---")

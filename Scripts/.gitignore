@@ -44,14 +44,7 @@ env/
 htmlcov/
 .tox/
 
-# MiniZinc outputs (Scripts-specific - DO commit .dzn)
-*.json
-
 # Temporary files
 *.tmp
 *.log
 .cache/
-
-# .dzn files WILL BE IGNORED HERE
-*.dzn
-*.txt.dzn

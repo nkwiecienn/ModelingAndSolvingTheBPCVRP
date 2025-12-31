@@ -74,3 +74,12 @@ class BPPInstance:
             f"capacity = {self.capacity};\n"
             f"size = [{sizes_str}];\n"
         )
+
+    def to_string(self) -> str:
+        sizes_str = ", ".join(str(s) for s in self.sizes)
+        return (
+            "BPP instance\n"
+            f"n         : {self.n}\n"
+            f"capacity  : {self.capacity}\n"
+            f"sizes     : [{sizes_str}]"
+        )
