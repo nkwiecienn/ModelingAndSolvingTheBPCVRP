@@ -1,0 +1,10 @@
+N = 2;
+Capacity = 20;
+nbVehicles = 3;
+maxVisitsPerCustomer = 2;
+Demand = [35, 7];
+Distance = [|
+  0, 25, 30
+| 25, 0, 50
+| 30, 50, 0
+|];

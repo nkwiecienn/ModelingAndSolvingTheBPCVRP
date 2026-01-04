@@ -47,9 +47,9 @@ BPCSD_VEHICLE_CAPACITY = 4        # capacity in pallets
 BPCSD_BIN_CAPACITY = 50           # pallet capacity in item-size units
 BPCSD_MIN_ITEM_RATIO = 0.2
 BPCSD_MAX_ITEM_RATIO = 0.8
-BPCSD_MIN_ITEMS_PER_CUST = 3
-BPCSD_MAX_ITEMS_PER_CUST = 10
-BPCSD_FRACTION_SPLIT_CUSTOMERS = 0.30
+BPCSD_MIN_ITEMS_PER_CUST = 2
+BPCSD_MAX_ITEMS_PER_CUST = 8
+BPCSD_FRACTION_SPLIT_CUSTOMERS = 0.1
 BPCSD_SPLIT_MIN_EXTRA_PALLETS = 1
 
 
@@ -235,20 +235,86 @@ def vrp():
         group_key="instance_type",
     )
 
+# -------------------------------------------------------------------
+# SD-CVRP with CVRP instances
+# -------------------------------------------------------------------
+def sdvrp_vs_cvrp():
+    runs: list[dict[str, object]] = []
+    stop = False
+    
+    for n in range(2, 5):
+        for seed in _seeds_for_n(n):
+            vrp: VRPInstance = generate_random_vrp(
+                n_customers=n,
+                area_size=100.0,
+                demand_min=1,
+                demand_max=10,
+                vehicle_capacity=None,
+                vehicle_capacity_factor=1.1,
+                target_vehicles=int(n / 3) + 1,
+                instance_type=INSTANCE_TYPE,
+                seed=seed,
+            )
+
+            inst = SDVRPInstance.from_vrp(vrp, nbVehicles=n, maxVisitsPerCustomer=2)
+
+            model_path = MODELS_DIR / "vrp_003_split_delivery.mzn"
+            data_path = DATA_DIR / "sdvrp_vs_cvrp" / f"sdvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.dzn"
+            save_as_dzn(inst, data_path)
+
+            runner = MiniZincRunner(model_path, solver_name=SOLVER_NAME)
+            res = runner.solve_instance(inst, time_limit=TIME_LIMIT, threads=THREADS)
+
+            result_path = RESULTS_DIR / "sdvrp_vs_cvrp" / f"sdvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.json"
+            save_result_json(data_path, res, result_path)
+
+            runs.append({
+                "n_customers": inst.N,
+                "seed": seed,
+                "time": res.time,
+                "optimal": is_optimal(res.status),
+                "status": str(res.status),
+                "has_solution": getattr(res, "has_solution", None),
+                "objective": getattr(res, "objective", None),
+                "instance_type": INSTANCE_TYPE,
+            })
+
+            print_solve_header(f"SDVRP n={n}, seed={seed} ({INSTANCE_TYPE})")
+            print_instance(inst)
+            print("-" * 50)
+            print_solve_result(res)
+
+            if _timed_out(res.status, res.time, TIME_LIMIT):
+                stop = True
+                break
+
+        if stop:
+            break
+
+    plot_points = _aggregate_for_plot(runs, x_key="n_customers", group_key="instance_type")
+    plot_runtime_vs_size(
+        plot_points,
+        x_key="n_customers",
+        title="SDVRP runtime vs n_customers (mean over seeds)",
+        xlabel="n_customers",
+        out_path=RESULTS_DIR / "sdvrp_vs_cvrp" / "sdvrp_n_customers_vs_time.png",
+        group_key="instance_type",
+    )
 
 # -------------------------------------------------------------------
 # SD-CVRP
 # -------------------------------------------------------------------
 def sdvrp():
     runs: list[dict[str, object]] = []
+    stop = False
 
-    for n in range(2, 10):
+    for n in range(2, 5):
         for seed in _seeds_for_n(n):
             inst: SDVRPInstance = generate_random_sdvrp(
                 n_customers=n,
                 vehicle_capacity=20,
-                demand_min=1,
-                demand_max=10,
+                demand_min=5,
+                demand_max=20,
                 maxVisitsPerCustomer=2,
                 nbVehicles=None,
                 fraction_oversized=0.30,
@@ -344,8 +410,9 @@ def bpcsdvrp():
     BP-CVRP with Split Deliveries (integrated model).
     """
     runs: list[dict[str, object]] = []
+    stop = False
 
-    for n in range(2, 10):
+    for n in range(2, 5):
         for seed in _seeds_for_n(n):
             inst = _generate_master_bpcsdvrp(n, seed)
 
@@ -402,8 +469,9 @@ def bpcvrp():
     Some instances may be UNSAT (and that's OK to record).
     """
     runs: list[dict[str, object]] = []
+    stop = False
 
-    for n in range(2, 10):
+    for n in range(2, 9):
         for seed in _seeds_for_n(n):
             master = _generate_master_bpcsdvrp(n, seed)
             inst = master.to_bpcvrp()  # <-- same Distance + same item lists
@@ -454,8 +522,9 @@ def bpcvrp():
 
 if __name__ == "__main__":
     # bpp()
-    vrp()
+    # vrp()
+    # sdvrp_vs_cvrp()
     # sdvrp()
-    # bpcvrp()
+    bpcvrp()
     # bpcsdvrp()
     pass
