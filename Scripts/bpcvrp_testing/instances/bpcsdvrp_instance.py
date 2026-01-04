@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+from bpcvrp_testing.instances.bpcvrp_instance import BPCVRPInstance
+
 
 @dataclass
 class BPCSDVRPInstance:
@@ -81,3 +83,20 @@ class BPCSDVRPInstance:
         lines.append("|];")
 
         return "\n".join(lines) + "\n"
+    
+
+    def to_bpcvrp(self) -> BPCVRPInstance:
+        """
+        Project this BP-SDVRP instance down to a BP-CVRP instance by
+        keeping the shared data (distance + per-customer items).
+        """
+        return BPCVRPInstance(
+            N=self.N,
+            Capacity=self.Capacity,
+            Distance=[list(r) for r in self.Distance],
+            ItemsPerCustomer=list(self.ItemsPerCustomer),
+            maxItemsPerCustomer=self.maxItemsPerCustomer,
+            binCapacity=self.binCapacity,
+            SizesOfItems=[list(r) for r in self.SizesOfItems],
+            name=self.name,
+        )

@@ -107,7 +107,7 @@ def solve_bpp_for_customer(
         "size": list(sizes),
     }
 
-    res = bpp_runner.solve(data, time_limit=time_limit)
+    res = bpp_runner.solve(data, time_limit=time_limit, threads=24)
     pallets = _extract_bpp_objective(res)
 
     if pallets is not None:
@@ -129,7 +129,7 @@ def palletise_and_group(
     SizesOfItems: Sequence[Sequence[int]],
     binCapacity: int,
     bpp_model_path: PathLike,
-    solver_name: str = "chuffed",
+    solver_name: str = "cp-sat",
     time_limit_per_customer: Optional[float] = None,
     fallback: str = "volume_lb",
 ) -> PalletisationStats:
@@ -231,7 +231,7 @@ def build_grouped_vrp_instance(
 def solve_grouped_orders_vrp(
     grouped_instance: GroupedVRPInstance,
     vrp_model_path: PathLike,
-    solver_name: str = "chuffed",
+    solver_name: str = "cp-sat",
     time_limit: Optional[float] = None,
 ) -> SolveResult:
     """
@@ -241,14 +241,14 @@ def solve_grouped_orders_vrp(
       N, Capacity, nbVehicles, Demand, Distance, fixedCost
     """
     runner = MiniZincRunner(vrp_model_path, solver_name=solver_name)
-    return runner.solve_instance(grouped_instance, time_limit=time_limit)
+    return runner.solve_instance(grouped_instance, time_limit=time_limit, threads=24)
 
 
 def solve_bpcvrp_grouped_heuristic(
     instance_obj: Any,
     bpp_model_path: PathLike,
     vrp_grouped_model_path: PathLike,
-    solver_name: str = "chuffed",
+    solver_name: str = "cp-sat",
     time_limit_per_customer: Optional[float] = None,
     time_limit_vrp: Optional[float] = None,
     fallback: str = "volume_lb",

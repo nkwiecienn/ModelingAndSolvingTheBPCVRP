@@ -38,7 +38,7 @@ array[CUSTOMER, Items] of var Bins: B;
 array[CUSTOMER, Bins, Items] of var bool: X;
 
 % This is the “bridge” quantity: number of pallets required by customer c
-array[CUSTOMER] of var 0..maxItemsPerCustomer: Demand;
+array[CUSTOMER] of var 0..nbCustomerCopies: Demand;
 
 % Optional cleanup: padded items (i > ItemsPerCustomer[c]) stay in bin 1
 constraint forall(c in CUSTOMER, i in Items where i > ItemsPerCustomer[c]) (
