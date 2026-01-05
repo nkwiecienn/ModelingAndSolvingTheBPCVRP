@@ -49,11 +49,11 @@ BPCSD_BIN_CAPACITY = 50           # pallet capacity in item-size units
 BPCSD_MIN_ITEM_RATIO = 0.2
 BPCSD_MAX_ITEM_RATIO = 0.8
 BPCSD_MIN_ITEMS_PER_CUST = 2
-BPCSD_MAX_ITEMS_PER_CUST = 8
-BPCSD_FRACTION_SPLIT_CUSTOMERS = 0.1
+BPCSD_MAX_ITEMS_PER_CUST = 50
+BPCSD_FRACTION_SPLIT_CUSTOMERS = 0.3
 BPCSD_SPLIT_MIN_EXTRA_PALLETS = 1
 
-GROUPED_BPP_LIMIT_PER_CUSTOMER = 60
+GROUPED_BPP_LIMIT_PER_CUSTOMER = 600
 
 
 
@@ -421,13 +421,13 @@ def bpcsdvrp():
             inst = _generate_master_bpcsdvrp(n, seed)
 
             model_path = MODELS_DIR / "bpcvrp_002_split_deliveries.mzn"
-            data_path = DATA_DIR / "bpcsdvrp" / f"bpcsdvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.dzn"
+            data_path = DATA_DIR / "bpcsdvrp_03" / f"bpcsdvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.dzn"
             save_as_dzn(inst, data_path)
 
             runner = MiniZincRunner(model_path, solver_name=SOLVER_NAME)
             res = runner.solve_instance(inst, time_limit=TIME_LIMIT, threads=THREADS)
 
-            result_path = RESULTS_DIR / "bpcsdvrp" / f"bpcsdvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.json"
+            result_path = RESULTS_DIR / "bpcsdvrp_03" / f"bpcsdvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.json"
             save_result_json(data_path, res, result_path)
 
             runs.append({
@@ -461,7 +461,7 @@ def bpcsdvrp():
         x_key="n_customers",
         title="BPCSDVRP runtime vs n_customers (mean over seeds)",
         xlabel="n_customers",
-        out_path=RESULTS_DIR / "bpcsdvrp" / "bpcsdvrp_n_customers_vs_time.png",
+        out_path=RESULTS_DIR / "bpcsdvrp_03" / "bpcsdvrp_n_customers_vs_time.png",
         group_key="instance_type",
     )
 
@@ -475,19 +475,19 @@ def bpcvrp():
     runs: list[dict[str, object]] = []
     stop = False
 
-    for n in range(2, 9):
+    for n in range(2, 5):
         for seed in _seeds_for_n(n):
             master = _generate_master_bpcsdvrp(n, seed)
             inst = master.to_bpcvrp()  # <-- same Distance + same item lists
 
             model_path = MODELS_DIR / "bpcvrp_001.mzn"
-            data_path = DATA_DIR / "bpcvrp" / f"bpcvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.dzn"
+            data_path = DATA_DIR / "bpcvrp_03" / f"bpcvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.dzn"
             save_as_dzn(inst, data_path)
 
             runner = MiniZincRunner(model_path, solver_name=SOLVER_NAME)
             res = runner.solve_instance(inst, time_limit=TIME_LIMIT, threads=THREADS)
 
-            result_path = RESULTS_DIR / "bpcvrp" / f"bpcvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.json"
+            result_path = RESULTS_DIR / "bpcvrp_03" / f"bpcvrp_{INSTANCE_TYPE}_n{n}_seed{seed}.json"
             save_result_json(data_path, res, result_path)
 
             runs.append({
@@ -519,7 +519,7 @@ def bpcvrp():
         x_key="n_customers",
         title="BPCVRP runtime vs n_customers (mean over seeds)",
         xlabel="n_customers",
-        out_path=RESULTS_DIR / "bpcvrp" / "bpcvrp_n_customers_vs_time.png",
+        out_path=RESULTS_DIR / "bpcvrp_03" / "bpcvrp_n_customers_vs_time.png",
         group_key="instance_type",
     )
 
@@ -530,14 +530,14 @@ def bpcsdvrp_grouped():
     instance_type = INSTANCE_TYPE
     stop = False
 
-    for n in range(2, 9):
+    for n in range(9, 10):
         for seed in _seeds_for_n(n):
 
             inst = _generate_master_bpcsdvrp(n, seed)
 
             data_path = (
                 DATA_DIR
-                / "bpcsdvrp_grouped"
+                / "bpcsdvrp_grouped_03"
                 / f"bpcsdvrp_grouped_{instance_type}_n{n}_seed{seed}.dzn"
             )
             save_as_dzn(inst, data_path)
@@ -556,7 +556,7 @@ def bpcsdvrp_grouped():
 
             result_path = (
                 RESULTS_DIR
-                / "bpcsdvrp_grouped"
+                / "bpcsdvrp_grouped_03"
                 / f"bpcsdvrp_grouped_{instance_type}_n{n}_seed{seed}.json"
             )
             save_result_json(data_path, res, result_path)
@@ -590,7 +590,7 @@ def bpcsdvrp_grouped():
         group_key="instance_type",
         title="BPCSDVRP grouped heuristic runtime vs n_customers",
         xlabel="n_customers",
-        out_path=RESULTS_DIR / "bpcsdvrp_grouped" / "plots",
+        out_path=RESULTS_DIR / "bpcsdvrp_grouped_03" / "plots",
     )
 
 
@@ -601,6 +601,6 @@ if __name__ == "__main__":
     # sdvrp_vs_cvrp()
     # sdvrp()
     # bpcvrp()
-    # bpcsdvrp()
+    bpcsdvrp()
     bpcsdvrp_grouped()
     pass
