@@ -4,6 +4,7 @@ from math import ceil
 from pathlib import Path
 from typing import Optional
 
+from Scripts.bpcvrp_testing.solvers.bpcsdvrp_sequential import solve_bpcsdvrp_grouped_heuristic
 from bpcvrp_testing.io.io_utils import save_as_dzn
 from bpcvrp_testing.io.experiment_utils import (
     is_optimal,
@@ -42,7 +43,7 @@ INSTANCE_TYPE = "uniform"
 BASE_SEED = 42
 
 # Integrated-instance controls (shared by BP-CVRP and BP-CVRP-SD)
-BPCSD_MAX_VISITS = 3
+BPCSD_MAX_VISITS = 2
 BPCSD_VEHICLE_CAPACITY = 4        # capacity in pallets
 BPCSD_BIN_CAPACITY = 50           # pallet capacity in item-size units
 BPCSD_MIN_ITEM_RATIO = 0.2
@@ -51,6 +52,9 @@ BPCSD_MIN_ITEMS_PER_CUST = 2
 BPCSD_MAX_ITEMS_PER_CUST = 8
 BPCSD_FRACTION_SPLIT_CUSTOMERS = 0.1
 BPCSD_SPLIT_MIN_EXTRA_PALLETS = 1
+
+GROUPED_BPP_LIMIT_PER_CUSTOMER = 60
+
 
 
 def _seeds_for_n(n: int, base_seed: int = BASE_SEED, reps: int = REPEATS_PER_N) -> list[int]:
@@ -520,11 +524,83 @@ def bpcvrp():
     )
 
 
+def bpcsdvrp_grouped():
+    results: list[dict[str, object]] = []
+
+    instance_type = INSTANCE_TYPE
+    stop = False
+
+    for n in range(2, 9):
+        for seed in _seeds_for_n(n):
+
+            inst = _generate_master_bpcsdvrp(n, seed)
+
+            data_path = (
+                DATA_DIR
+                / "bpcsdvrp_grouped"
+                / f"bpcsdvrp_grouped_{instance_type}_n{n}_seed{seed}.dzn"
+            )
+            save_as_dzn(inst, data_path)
+
+            res = solve_bpcsdvrp_grouped_heuristic(
+                inst=inst,
+                bpp_model_path=MODELS_DIR / "bpp_002.mzn",
+                vrp_model_path=MODELS_DIR / "vrp_002.mzn",
+                solver_name="cp-sat",
+                threads=24,
+                time_limit_bpp_per_customer=GROUPED_BPP_LIMIT_PER_CUSTOMER,
+                time_limit_vrp=TIME_LIMIT,
+                treat_equal_capacity_as_fixed=False,
+                fallback_bpp="items_ub",
+            )
+
+            result_path = (
+                RESULTS_DIR
+                / "bpcsdvrp_grouped"
+                / f"bpcsdvrp_grouped_{instance_type}_n{n}_seed{seed}.json"
+            )
+            save_result_json(data_path, res, result_path)
+            results.append(
+                {
+                    "n_customers": n,
+                    "time": float(res.time),
+                    "optimal": False,
+                    "instance_type": instance_type,
+                    "objective": res.objective,
+                    "status": res.status,
+                    "has_solution": res.has_solution,
+                }
+            )
+
+            print_solve_header(f"BPCSDVRP grouped | n={n} | seed={seed} ({instance_type})")
+            print_instance(inst)
+            print("-" * 50)
+            print_solve_result(res)
+
+            if _timed_out(res.status, res.time, TIME_LIMIT):
+                stop = True
+                break
+
+        if stop:
+            break
+
+    plot_runtime_vs_size(
+        results,
+        x_key="n_customers",
+        group_key="instance_type",
+        title="BPCSDVRP grouped heuristic runtime vs n_customers",
+        xlabel="n_customers",
+        out_path=RESULTS_DIR / "bpcsdvrp_grouped" / "plots",
+    )
+
+
+
 if __name__ == "__main__":
     # bpp()
     # vrp()
     # sdvrp_vs_cvrp()
     # sdvrp()
-    bpcvrp()
+    # bpcvrp()
     # bpcsdvrp()
+    bpcsdvrp_grouped()
     pass
