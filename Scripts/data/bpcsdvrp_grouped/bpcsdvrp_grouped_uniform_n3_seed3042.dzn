@@ -1,0 +1,18 @@
+N = 3;
+Capacity = 4;
+nbVehicles = 5;
+maxVisitsPerCustomer = 2;
+ItemsPerCustomer = [5, 6, 7];
+maxItemsPerCustomer = 7;
+binCapacity = 50;
+SizesOfItems = [|
+  33, 30, 24, 21, 17, 0, 0
+| 38, 35, 32, 27, 26, 24, 0
+| 40, 36, 35, 35, 27, 25, 10
+|];
+Distance = [|
+  0, 29, 54, 10
+| 29, 0, 67, 20
+| 54, 67, 0, 61
+| 10, 20, 61, 0
+|];

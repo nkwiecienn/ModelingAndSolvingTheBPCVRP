@@ -4,7 +4,7 @@ from math import ceil
 from pathlib import Path
 from typing import Optional
 
-from Scripts.bpcvrp_testing.solvers.bpcsdvrp_sequential import solve_bpcsdvrp_grouped_heuristic
+from bpcvrp_testing.solvers.bpcsdvrp_sequential import solve_bpcsdvrp_grouped_heuristic
 from bpcvrp_testing.io.io_utils import save_as_dzn
 from bpcvrp_testing.io.experiment_utils import (
     is_optimal,
